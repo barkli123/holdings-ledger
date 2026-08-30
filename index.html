@@ -7,7 +7,7 @@
 <meta name="description" content="כלי אישי למעקב אחרי החזקות מסחר — חברה, מחיר כניסה, כמות ורווח/הפסד.">
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0071E3">
+<meta name="theme-color" content="#1E3A5F">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,44 +15,47 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png" type="image/png">
 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&display=swap">
 <style>
   :root{
-    --bg:#F2F2F7;
+    --bg:#FAF9F6;
     --surface:#FFFFFF;
-    --surface-2:#F2F2F7;
-    --ink:#1C1C1E;
-    --ink-dim:#8E8E93;
-    --border:#E5E5EA;
-    --accent:#0071E3;
-    --accent-strong:#0058B0;
-    --accent-soft:#E8F1FC;
-    --pos:#248A3D;
-    --pos-soft:#E3F8E9;
-    --neg:#D70015;
-    --neg-soft:#FFE5E3;
-    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 12px 28px rgba(0,0,0,.06);
+    --surface-2:#F3F1EC;
+    --ink:#15151A;
+    --ink-dim:#83807A;
+    --border:#EAE7DF;
+    --accent:#1E3A5F;
+    --accent-strong:#14263F;
+    --accent-soft:#EBF0F6;
+    --pos:#1F7A4D;
+    --pos-soft:#E6F3EC;
+    --neg:#B3261E;
+    --neg-soft:#FBEAE8;
+    --shadow: 0 1px 2px rgba(20,20,26,.03), 0 24px 48px rgba(20,20,26,.07);
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --bg:#000000;
-      --surface:#1C1C1E;
-      --surface-2:#2C2C2E;
-      --ink:#F5F5F7;
-      --ink-dim:#98989D;
-      --border:#38383A;
-      --accent:#0A84FF;
-      --accent-strong:#409CFF;
-      --accent-soft:#132437;
-      --pos:#30D158;
-      --pos-soft:#0F2A18;
-      --neg:#FF453A;
-      --neg-soft:#3A1512;
-      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 16px 36px rgba(0,0,0,.55);
+      --bg:#0B0B0D;
+      --surface:#17171B;
+      --surface-2:#1F1F24;
+      --ink:#F2F1EC;
+      --ink-dim:#9B9994;
+      --border:#2A2A30;
+      --accent:#5B84C4;
+      --accent-strong:#7A9CD4;
+      --accent-soft:#182338;
+      --pos:#3FAE74;
+      --pos-soft:#11291C;
+      --neg:#E5584C;
+      --neg-soft:#301613;
+      --shadow: 0 1px 2px rgba(0,0,0,.5), 0 28px 56px rgba(0,0,0,.6);
     }
   }
 
   *{ box-sizing:border-box; }
   html, body{ margin:0; }
+  [hidden]{ display:none !important; }
   body{
     direction:rtl;
     background:var(--bg);
@@ -61,6 +64,7 @@
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
   }
+  .serif{ font-family:"Fraunces",Georgia,serif; }
 
   /* ---------- Welcome screen ---------- */
   .welcome{
@@ -78,16 +82,16 @@
     height:60vmax;
     border-radius:50%;
     filter:blur(70px);
-    opacity:.35;
+    opacity:.28;
     pointer-events:none;
   }
   .blob-a{
-    background:radial-gradient(circle at 30% 30%, #0A84FF, transparent 70%);
+    background:radial-gradient(circle at 30% 30%, #4A6FA5, transparent 70%);
     top:-20%;
     right:-15%;
   }
   .blob-b{
-    background:radial-gradient(circle at 70% 70%, #30D158, transparent 70%);
+    background:radial-gradient(circle at 70% 70%, #C9A66B, transparent 70%);
     bottom:-25%;
     left:-15%;
   }
@@ -148,7 +152,7 @@
     font-size:17px;
     font-weight:600;
     cursor:pointer;
-    box-shadow:0 8px 20px rgba(10,132,255,.3);
+    box-shadow:0 8px 24px rgba(30,58,95,.35);
     transition:transform .15s ease, background .15s ease;
   }
   .btn-continue:hover{ background:var(--accent-strong); transform:translateY(-1px); }
@@ -156,31 +160,25 @@
 
   /* ---------- Main app ---------- */
   .app{
-    max-width:960px;
+    max-width:900px;
     margin:0 auto;
-    padding:28px 20px 80px;
+    padding:0;
+    min-height:100vh;
   }
 
   .masthead{
     display:flex;
-    align-items:flex-end;
+    align-items:center;
     justify-content:space-between;
     gap:16px;
-    padding-bottom:20px;
-    margin-bottom:24px;
+    padding:28px 28px 0;
     flex-wrap:wrap;
   }
-  .masthead h1{
-    font-weight:700;
-    font-size:clamp(26px,4vw,34px);
-    letter-spacing:-.01em;
-    margin:0;
-    text-wrap:balance;
-  }
-  .masthead p{
-    margin:4px 0 0;
+  .masthead .brand{
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:.02em;
     color:var(--ink-dim);
-    font-size:14px;
   }
   .currency-toggle{
     display:flex;
@@ -207,66 +205,106 @@
     box-shadow:0 1px 3px rgba(0,0,0,.12);
   }
 
-  .summary{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:12px;
-    margin-bottom:24px;
+  /* hero portfolio value */
+  .hero{
+    padding:32px 28px 36px;
+    text-align:center;
   }
-  .stat{
-    background:var(--surface);
+  .hero-label{
+    font-size:13px;
+    color:var(--ink-dim);
+    letter-spacing:.03em;
+    margin-bottom:10px;
+  }
+  .hero-value{
+    font-family:"Fraunces",Georgia,serif;
+    font-weight:500;
+    font-size:clamp(40px,8vw,60px);
+    letter-spacing:-.01em;
+    font-variant-numeric:tabular-nums;
+    direction:ltr;
+    unicode-bidi:isolate;
+  }
+  .hero-sub{
+    margin-top:10px;
+    font-size:15px;
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+    direction:ltr;
+    unicode-bidi:isolate;
+  }
+  .hero-sub.pos{ color:var(--pos); }
+  .hero-sub.neg{ color:var(--neg); }
+
+  .summary-secondary{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--border);
     border-radius:16px;
-    padding:16px 18px;
+    overflow:hidden;
+    margin:0 28px 28px;
     box-shadow:var(--shadow);
   }
-  .stat .label{
+  .stat-mini{
+    background:var(--surface);
+    padding:16px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .stat-mini .label{
     font-size:12px;
-    letter-spacing:.02em;
     color:var(--ink-dim);
   }
-  .stat .value{
+  .stat-mini .value{
     font-variant-numeric:tabular-nums;
-    font-size:21px;
+    font-size:18px;
     font-weight:600;
     letter-spacing:-.01em;
-    margin-top:6px;
   }
-  .stat .value.pos{ color:var(--pos); }
-  .stat .value.neg{ color:var(--neg); }
+
+  .section{
+    padding:0 28px;
+    margin-bottom:28px;
+  }
+  .section-title{
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    margin:0 0 14px;
+  }
 
   .card{
     background:var(--surface);
-    border-radius:18px;
+    border-radius:20px;
     box-shadow:var(--shadow);
-    margin-bottom:20px;
     overflow:hidden;
-  }
-  .card-head{
-    padding:16px 20px;
-    font-weight:600;
-    font-size:17px;
-    letter-spacing:-.005em;
   }
   form.add-form{
     display:grid;
     grid-template-columns:1.6fr 1fr 1fr 1fr auto;
-    gap:10px;
-    padding:0 20px 20px;
+    gap:20px;
+    padding:24px;
     align-items:end;
   }
-  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field{ display:flex; flex-direction:column; gap:8px; }
   .field label{
     font-size:12px;
     color:var(--ink-dim);
   }
   .field input{
-    background:var(--surface-2);
-    border:1px solid transparent;
-    border-radius:10px;
-    padding:10px 12px;
+    background:transparent;
+    border:0;
+    border-bottom:1px solid var(--border);
+    border-radius:0;
+    padding:6px 2px 8px;
     color:var(--ink);
     font-family:inherit;
-    font-size:15px;
+    font-size:16px;
+    transition:border-color .15s ease;
   }
   .field input[type="number"]{
     font-variant-numeric:tabular-nums;
@@ -274,14 +312,13 @@
   .field input:focus, button:focus-visible{
     outline:none;
     border-color:var(--accent);
-    box-shadow:0 0 0 3px var(--accent-soft);
   }
   .btn-primary{
     background:var(--accent);
     color:#fff;
     border:0;
     border-radius:10px;
-    padding:11px 20px;
+    padding:12px 22px;
     font-family:inherit;
     font-weight:600;
     font-size:15px;
@@ -295,22 +332,27 @@
   table{
     width:100%;
     border-collapse:collapse;
-    min-width:720px;
+    min-width:680px;
   }
   thead th{
     text-align:right;
-    font-size:12px;
+    font-size:11px;
+    letter-spacing:.03em;
+    text-transform:uppercase;
     color:var(--ink-dim);
     font-weight:600;
-    padding:0 20px 10px;
+    padding:0 24px 12px;
   }
+  thead tr{ display:table-row; }
+  thead th:first-child{ padding-top:22px; }
   thead th.num, td.num{ text-align:left; }
   tbody td{
-    padding:14px 20px;
+    padding:18px 24px;
     border-top:1px solid var(--border);
     font-size:15px;
   }
   tbody tr:hover{ background:var(--surface-2); }
+  tbody tr:last-child td{ padding-bottom:22px; }
   td.num, td.mono{
     font-variant-numeric:tabular-nums;
   }
@@ -347,44 +389,77 @@
     align-items:center;
   }
   .price-edit input{
-    width:80px;
-    background:var(--surface-2);
-    border:1px solid transparent;
-    border-radius:8px;
-    padding:6px 8px;
+    width:76px;
+    background:transparent;
+    border:0;
+    border-bottom:1px solid var(--border);
+    border-radius:0;
+    padding:4px 2px;
     font-variant-numeric:tabular-nums;
     font-size:14px;
     color:var(--ink);
     font-family:inherit;
+    text-align:left;
   }
   .price-edit input:focus{
     outline:none;
     border-color:var(--accent);
-    box-shadow:0 0 0 3px var(--accent-soft);
   }
 
   .empty{
-    padding:48px 20px;
+    padding:56px 24px;
     text-align:center;
     color:var(--ink-dim);
     font-size:15px;
   }
 
   footer.hint{
-    margin-top:18px;
+    padding:0 28px 40px;
     font-size:13px;
     color:var(--ink-dim);
     text-align:center;
   }
 
-  @media (max-width:720px){
-    .summary{ grid-template-columns:repeat(2,1fr); }
-    form.add-form{ grid-template-columns:1fr 1fr; }
+  @media (max-width:640px){
+    .masthead, .hero, .section, footer.hint{ padding-left:20px; padding-right:20px; }
+    .summary-secondary{ grid-template-columns:1fr; margin-left:20px; margin-right:20px; }
+    form.add-form{ grid-template-columns:1fr 1fr; padding:20px; }
     form.add-form .btn-primary{ grid-column:1 / -1; }
+
+    table{ min-width:0; }
+    thead{ display:none; }
+    tbody tr{
+      display:flex;
+      flex-direction:column;
+      padding:18px 20px;
+      border-top:1px solid var(--border);
+    }
+    tbody tr:first-child{ border-top:0; }
+    tbody tr:last-child{ padding-bottom:18px; }
+    tbody td{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:5px 0;
+      border-top:0;
+      font-size:14px;
+    }
+    td.company{
+      font-size:17px;
+      padding:0 0 10px;
+      justify-content:flex-start;
+    }
+    td[data-label]::before{
+      content:attr(data-label);
+      color:var(--ink-dim);
+      font-size:13px;
+    }
+    td.num{ text-align:left; }
+    .row-actions{ justify-content:flex-end; padding-top:6px; }
   }
 
   @media (prefers-reduced-motion: no-preference){
-    tbody tr, .stat, .currency-toggle button{ transition: background .15s ease, box-shadow .15s ease; }
+    tbody tr, .currency-toggle button{ transition: background .15s ease, box-shadow .15s ease; }
   }
 </style>
 </head>
@@ -401,77 +476,76 @@
 
 <div class="app" id="mainScreen" hidden>
   <div class="masthead">
-    <div>
-      <h1>DT.Stocks</h1>
-      <p>מעקב אישי אחרי כניסות, כמויות ורווח והפסד — נשמר אוטומטית במכשיר שלך.</p>
-    </div>
+    <div class="brand">DT.STOCKS</div>
     <div class="currency-toggle" role="group" aria-label="בחירת מטבע">
       <button type="button" data-cur="₪">₪</button>
       <button type="button" data-cur="$">$</button>
     </div>
   </div>
 
-  <div class="summary">
-    <div class="stat">
-      <div class="label">עלות כוללת</div>
-      <div class="value" id="statCost">—</div>
+  <div class="hero">
+    <div class="hero-label">שווי תיק כולל</div>
+    <div class="hero-value" id="statValue">—</div>
+    <div class="hero-sub" id="statPnl">—</div>
+  </div>
+
+  <div class="summary-secondary">
+    <div class="stat-mini">
+      <span class="label">עלות כוללת</span>
+      <span class="value" id="statCost">—</span>
     </div>
-    <div class="stat">
-      <div class="label">שווי שוק</div>
-      <div class="value" id="statValue">—</div>
-    </div>
-    <div class="stat">
-      <div class="label">רווח / הפסד</div>
-      <div class="value" id="statPnl">—</div>
-    </div>
-    <div class="stat">
-      <div class="label">מספר החזקות</div>
-      <div class="value" id="statCount">—</div>
+    <div class="stat-mini">
+      <span class="label">מספר החזקות</span>
+      <span class="value" id="statCount">—</span>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-head">הוספת החזקה</div>
-    <form class="add-form" id="addForm">
-      <div class="field">
-        <label for="fCompany">שם חברה</label>
-        <input id="fCompany" type="text" placeholder="לדוגמה: טבע" required>
-      </div>
-      <div class="field">
-        <label for="fEntry">מחיר כניסה</label>
-        <input id="fEntry" type="number" step="0.01" min="0" placeholder="0.00" required>
-      </div>
-      <div class="field">
-        <label for="fQty">כמות מוחזקת</label>
-        <input id="fQty" type="number" step="0.0001" min="0" placeholder="0" required>
-      </div>
-      <div class="field">
-        <label for="fCurrent">מחיר נוכחי (רשות)</label>
-        <input id="fCurrent" type="number" step="0.01" min="0" placeholder="כמו מחיר כניסה">
-      </div>
-      <button type="submit" class="btn-primary">הוסף</button>
-    </form>
+  <div class="section">
+    <p class="section-title">הוספת החזקה</p>
+    <div class="card">
+      <form class="add-form" id="addForm">
+        <div class="field">
+          <label for="fCompany">שם חברה</label>
+          <input id="fCompany" type="text" placeholder="לדוגמה: טבע" required>
+        </div>
+        <div class="field">
+          <label for="fEntry">מחיר כניסה</label>
+          <input id="fEntry" type="number" step="0.01" min="0" placeholder="0.00" required>
+        </div>
+        <div class="field">
+          <label for="fQty">כמות מוחזקת</label>
+          <input id="fQty" type="number" step="0.0001" min="0" placeholder="0" required>
+        </div>
+        <div class="field">
+          <label for="fCurrent">מחיר נוכחי (רשות)</label>
+          <input id="fCurrent" type="number" step="0.01" min="0" placeholder="כמו מחיר כניסה">
+        </div>
+        <button type="submit" class="btn-primary">הוסף</button>
+      </form>
+    </div>
   </div>
 
-  <div class="card">
-    <div class="card-head">ההחזקות שלי</div>
-    <div class="table-wrap">
-      <table id="holdingsTable">
-        <thead>
-          <tr>
-            <th>חברה</th>
-            <th class="num">מחיר כניסה</th>
-            <th class="num">כמות</th>
-            <th class="num">מחיר נוכחי</th>
-            <th class="num">שווי שוק</th>
-            <th class="num">רווח / הפסד</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
+  <div class="section">
+    <p class="section-title">ההחזקות שלי</p>
+    <div class="card">
+      <div class="table-wrap">
+        <table id="holdingsTable">
+          <thead>
+            <tr>
+              <th>חברה</th>
+              <th class="num">מחיר כניסה</th>
+              <th class="num">כמות</th>
+              <th class="num">מחיר נוכחי</th>
+              <th class="num">שווי שוק</th>
+              <th class="num">רווח / הפסד</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="emptyState" hidden>עדיין לא הוספת החזקות. מלא/י את הטופס למעלה כדי להתחיל.</div>
     </div>
-    <div class="empty" id="emptyState" hidden>עדיין לא הוספת החזקות. מלא/י את הטופס למעלה כדי להתחיל.</div>
   </div>
 
   <footer class="hint">כלי דמו אישי — הנתונים נשמרים רק במכשיר הזה ואינם נשלחים לשום מקום.</footer>
@@ -555,16 +629,19 @@
 
       var tdEntry = document.createElement("td");
       tdEntry.className = "num mono";
+      tdEntry.setAttribute("data-label", "מחיר כניסה");
       tdEntry.textContent = fmt(p.entry);
       tr.appendChild(tdEntry);
 
       var tdQty = document.createElement("td");
       tdQty.className = "num mono";
+      tdQty.setAttribute("data-label", "כמות");
       tdQty.textContent = fmtQty(p.qty);
       tr.appendChild(tdQty);
 
       var tdCurrent = document.createElement("td");
       tdCurrent.className = "num mono";
+      tdCurrent.setAttribute("data-label", "מחיר נוכחי");
       var priceWrap = document.createElement("div");
       priceWrap.className = "price-edit";
       priceWrap.style.justifyContent = "flex-end";
@@ -586,11 +663,13 @@
 
       var tdValue = document.createElement("td");
       tdValue.className = "num mono";
+      tdValue.setAttribute("data-label", "שווי שוק");
       tdValue.textContent = fmt(value);
       tr.appendChild(tdValue);
 
       var tdPnl = document.createElement("td");
       tdPnl.className = "num";
+      tdPnl.setAttribute("data-label", "רווח / הפסד");
       var pill = document.createElement("span");
       pill.className = "pill " + (pnl >= 0 ? "pos" : "neg");
       pill.textContent = fmt(pnl) + " (" + fmtPct(pnlPct) + ")";
@@ -622,7 +701,7 @@
     document.getElementById("statValue").textContent = fmt(totalValue);
     var pnlEl = document.getElementById("statPnl");
     pnlEl.textContent = fmt(totalPnl) + (totalCost > 0 ? " (" + fmtPct((totalPnl/totalCost)*100) + ")" : "");
-    pnlEl.className = "value " + (totalPnl >= 0 ? "pos" : "neg");
+    pnlEl.className = "hero-sub " + (totalPnl >= 0 ? "pos" : "neg");
     document.getElementById("statCount").textContent = state.positions.length;
 
     document.querySelectorAll(".currency-toggle button").forEach(function(btn){
@@ -664,6 +743,7 @@
   document.getElementById("continueBtn").addEventListener("click", function(){
     document.getElementById("welcomeScreen").hidden = true;
     document.getElementById("mainScreen").hidden = false;
+    window.scrollTo(0, 0);
   });
 
   if("serviceWorker" in navigator){
