@@ -901,23 +901,33 @@
   }
 
   var speechVoice = null;
-  function pickHebrewVoice(){
+  var englishVoice = null;
+  function pickVoices(){
     if(!("speechSynthesis" in window)) return;
     var voices = window.speechSynthesis.getVoices();
     speechVoice = voices.find(function(v){ return /he|iw/i.test(v.lang); }) || null;
+    var enVoices = voices.filter(function(v){ return /^en/i.test(v.lang); });
+    englishVoice = enVoices.find(function(v){ return /david|daniel|alex|male/i.test(v.name); }) || enVoices[0] || null;
   }
   if("speechSynthesis" in window){
-    pickHebrewVoice();
-    window.speechSynthesis.addEventListener("voiceschanged", pickHebrewVoice);
+    pickVoices();
+    window.speechSynthesis.addEventListener("voiceschanged", pickVoices);
   }
   function speak(text){
     if(!text || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
-    var utter = new SpeechSynthesisUtterance(text);
-    utter.lang = "he-IL";
-    if(speechVoice) utter.voice = speechVoice;
-    utter.rate = 1;
-    window.speechSynthesis.speak(utter);
+
+    var main = new SpeechSynthesisUtterance(text);
+    main.lang = "en-US";
+    if(englishVoice) main.voice = englishVoice;
+    main.pitch = 0.75;
+    main.rate = 0.95;
+    window.speechSynthesis.speak(main);
+
+    var tag = new SpeechSynthesisUtterance("מעולה יא מניאק");
+    tag.lang = "he-IL";
+    if(speechVoice) tag.voice = speechVoice;
+    window.speechSynthesis.speak(tag);
   }
 
   document.getElementById("botForm").addEventListener("submit", function(e){
@@ -936,7 +946,9 @@
     }).then(function(r){ return r.json(); }).then(function(data){
       submitBtn.disabled = false;
       if(data.error){
-        showBotReply("שגיאה בתקשורת עם העוזר. נסה שוב.", true);
+        var connErr = "Something went wrong. Try again.";
+        showBotReply(connErr, true);
+        speak(connErr);
         return;
       }
       var handled = false;
@@ -974,7 +986,7 @@
       speak(replyText);
     }).catch(function(){
       submitBtn.disabled = false;
-      var errText = "לא הצלחתי להתחבר לעוזר. בדוק חיבור לאינטרנט.";
+      var errText = "Couldn't reach the assistant. Check your connection.";
       showBotReply(errText, true);
       speak(errText);
     });
