@@ -419,11 +419,62 @@
     font-size:15px;
   }
 
+  .chat-fab{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    border:0;
+    font-size:24px;
+    cursor:pointer;
+    z-index:80;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 10px 28px rgba(0,0,0,.28);
+    transition:transform .15s ease, background .15s ease;
+  }
+  .chat-fab:hover{ background:var(--accent-strong); transform:scale(1.05); }
+  .chat-fab:active{ transform:scale(.95); }
+
+  .chat-panel{
+    position:fixed;
+    bottom:94px;
+    right:24px;
+    width:320px;
+    max-width:calc(100vw - 32px);
+    background:var(--surface);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    z-index:80;
+    overflow:hidden;
+  }
+  .chat-panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+    border-bottom:1px solid var(--border);
+    font-weight:600;
+    font-size:15px;
+  }
+  .chat-panel-close{
+    background:none;
+    border:0;
+    color:var(--ink-dim);
+    font-size:18px;
+    cursor:pointer;
+    line-height:1;
+  }
   .bot-form{
     display:flex;
     align-items:center;
-    gap:12px;
-    padding:20px 24px;
+    gap:10px;
+    padding:16px 18px;
   }
   .bot-form input{
     flex:1;
@@ -434,7 +485,7 @@
     padding:8px 2px;
     color:var(--ink);
     font-family:inherit;
-    font-size:16px;
+    font-size:15px;
   }
   .bot-form input:focus{
     outline:none;
@@ -444,9 +495,9 @@
     background:var(--surface-2);
     border:0;
     border-radius:50%;
-    width:40px;
-    height:40px;
-    font-size:17px;
+    width:38px;
+    height:38px;
+    font-size:16px;
     cursor:pointer;
     flex-shrink:0;
     transition:background .15s ease, transform .15s ease;
@@ -460,11 +511,11 @@
     50%{ transform:scale(1.12); }
   }
   .bot-reply{
-    margin:0 24px 20px;
-    padding:12px 16px;
+    margin:0 18px 16px;
+    padding:12px 14px;
     background:var(--surface-2);
     border-radius:12px;
-    font-size:14px;
+    font-size:13.5px;
     color:var(--ink);
   }
   .bot-reply.bot-reply-error{
@@ -560,18 +611,6 @@
   </div>
 
   <div class="section">
-    <p class="section-title">עוזר חכם</p>
-    <div class="card">
-      <form class="bot-form" id="botForm">
-        <button type="button" class="mic-btn" id="micBtn" aria-label="הקלטה קולית" hidden>🎤</button>
-        <input type="text" id="botInput" placeholder="לדוגמה: תוסיף לי 100 מניות טבע ב-45 שקל" autocomplete="off">
-        <button type="submit" class="btn-primary">שלח</button>
-      </form>
-      <div class="bot-reply" id="botReply" hidden></div>
-    </div>
-  </div>
-
-  <div class="section">
     <p class="section-title">הוספת החזקה</p>
     <div class="card">
       <form class="add-form" id="addForm">
@@ -620,6 +659,20 @@
   </div>
 
   <footer class="hint">כלי דמו אישי — הנתונים נשמרים רק במכשיר הזה ואינם נשלחים לשום מקום.</footer>
+
+  <button type="button" class="chat-fab" id="chatFab" aria-label="פתיחת עוזר קולי">💬</button>
+  <div class="chat-panel" id="chatPanel" hidden>
+    <div class="chat-panel-head">
+      <span>עוזר חכם</span>
+      <button type="button" class="chat-panel-close" id="chatClose" aria-label="סגירה">✕</button>
+    </div>
+    <div class="bot-reply" id="botReply" hidden></div>
+    <form class="bot-form" id="botForm">
+      <button type="button" class="mic-btn" id="micBtn" aria-label="הקלטה קולית" hidden>🎤</button>
+      <input type="text" id="botInput" placeholder="תגיד או תכתוב מה להוסיף" autocomplete="off">
+      <button type="submit" class="btn-primary">שלח</button>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -810,6 +863,22 @@
       render();
     });
   });
+
+  var chatFab = document.getElementById("chatFab");
+  var chatPanel = document.getElementById("chatPanel");
+  function openChat(){
+    chatPanel.hidden = false;
+    chatFab.textContent = "✕";
+    document.getElementById("botInput").focus();
+  }
+  function closeChat(){
+    chatPanel.hidden = true;
+    chatFab.textContent = "💬";
+  }
+  chatFab.addEventListener("click", function(){
+    if(chatPanel.hidden) openChat(); else closeChat();
+  });
+  document.getElementById("chatClose").addEventListener("click", closeChat);
 
   var BOT_URL = "https://dtstocks-bot.barklien13.workers.dev";
 
