@@ -1,6 +1,6 @@
 {
-  "name": "יומן ההחזקות",
-  "short_name": "יומן החזקות",
+  "name": "DT.Stocks",
+  "short_name": "DT.Stocks",
   "description": "כלי אישי למעקב אחרי החזקות מסחר — חברה, מחיר כניסה, כמות ורווח/הפסד.",
   "start_url": ".",
   "scope": ".",
