@@ -831,6 +831,26 @@
     el.className = "bot-reply" + (isError ? " bot-reply-error" : "");
   }
 
+  var speechVoice = null;
+  function pickHebrewVoice(){
+    if(!("speechSynthesis" in window)) return;
+    var voices = window.speechSynthesis.getVoices();
+    speechVoice = voices.find(function(v){ return /he|iw/i.test(v.lang); }) || null;
+  }
+  if("speechSynthesis" in window){
+    pickHebrewVoice();
+    window.speechSynthesis.addEventListener("voiceschanged", pickHebrewVoice);
+  }
+  function speak(text){
+    if(!text || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    var utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "he-IL";
+    if(speechVoice) utter.voice = speechVoice;
+    utter.rate = 1;
+    window.speechSynthesis.speak(utter);
+  }
+
   document.getElementById("botForm").addEventListener("submit", function(e){
     e.preventDefault();
     var input = document.getElementById("botInput");
@@ -880,10 +900,14 @@
         }
       }
       if(handled) input.value = "";
-      showBotReply(data.reply || "בוצע.", data.action === "unknown");
+      var replyText = data.reply || "בוצע.";
+      showBotReply(replyText, data.action === "unknown");
+      speak(replyText);
     }).catch(function(){
       submitBtn.disabled = false;
-      showBotReply("לא הצלחתי להתחבר לעוזר. בדוק חיבור לאינטרנט.", true);
+      var errText = "לא הצלחתי להתחבר לעוזר. בדוק חיבור לאינטרנט.";
+      showBotReply(errText, true);
+      speak(errText);
     });
   });
 
@@ -897,11 +921,17 @@
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
     micBtn.addEventListener("click", function(){
+      if("speechSynthesis" in window) window.speechSynthesis.cancel();
       try{ recognition.start(); }catch(e){}
       micBtn.classList.add("listening");
     });
     recognition.addEventListener("result", function(e){
-      document.getElementById("botInput").value = e.results[0][0].transcript;
+      var transcript = e.results[0][0].transcript;
+      var botInput = document.getElementById("botInput");
+      botInput.value = transcript;
+      if(transcript.trim()){
+        document.getElementById("botForm").requestSubmit();
+      }
     });
     recognition.addEventListener("end", function(){
       micBtn.classList.remove("listening");
