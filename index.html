@@ -7,7 +7,7 @@
 <meta name="description" content="כלי אישי למעקב אחרי החזקות מסחר — חברה, מחיר כניסה, כמות ורווח/הפסד.">
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#8C5E22">
+<meta name="theme-color" content="#0071E3">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,41 +15,39 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png" type="image/png">
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Assistant:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
   :root{
-    --bg:#E9E6DC;
-    --surface:#F7F5EF;
-    --surface-2:#FFFFFF;
-    --ink:#1E2530;
-    --ink-dim:#5B6472;
-    --border:#D8D3C4;
-    --accent:#A8752E;
-    --accent-strong:#8C5E22;
-    --accent-soft:#F1E4CC;
-    --pos:#2E7D5B;
-    --pos-soft:#DCEEE3;
-    --neg:#B23B32;
-    --neg-soft:#F5DEDA;
-    --shadow: 0 1px 2px rgba(30,37,48,.06), 0 6px 20px rgba(30,37,48,.06);
+    --bg:#F2F2F7;
+    --surface:#FFFFFF;
+    --surface-2:#F2F2F7;
+    --ink:#1C1C1E;
+    --ink-dim:#8E8E93;
+    --border:#E5E5EA;
+    --accent:#0071E3;
+    --accent-strong:#0058B0;
+    --accent-soft:#E8F1FC;
+    --pos:#248A3D;
+    --pos-soft:#E3F8E9;
+    --neg:#D70015;
+    --neg-soft:#FFE5E3;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 12px 28px rgba(0,0,0,.06);
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --bg:#131820;
-      --surface:#1B222C;
-      --surface-2:#212A35;
-      --ink:#E9E5D8;
-      --ink-dim:#9AA3AF;
-      --border:#2C3542;
-      --accent:#D3A24C;
-      --accent-strong:#E8B95E;
-      --accent-soft:#3A2F1C;
-      --pos:#4FBE8A;
-      --pos-soft:#163024;
-      --neg:#E1685A;
-      --neg-soft:#3A1E1C;
-      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+      --bg:#000000;
+      --surface:#1C1C1E;
+      --surface-2:#2C2C2E;
+      --ink:#F5F5F7;
+      --ink-dim:#98989D;
+      --border:#38383A;
+      --accent:#0A84FF;
+      --accent-strong:#409CFF;
+      --accent-soft:#132437;
+      --pos:#30D158;
+      --pos-soft:#0F2A18;
+      --neg:#FF453A;
+      --neg-soft:#3A1512;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 16px 36px rgba(0,0,0,.55);
     }
   }
 
@@ -59,30 +57,123 @@
     direction:rtl;
     background:var(--bg);
     color:var(--ink);
-    font-family:"Assistant",-apple-system,"Segoe UI",sans-serif;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Arial,sans-serif;
     line-height:1.5;
-  }
-  .app{
-    max-width:1000px;
-    margin:0 auto;
-    padding:32px 20px 80px;
+    -webkit-font-smoothing:antialiased;
   }
 
-  /* header */
+  /* ---------- Welcome screen ---------- */
+  .welcome{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    background:var(--bg);
+  }
+  .welcome-blob{
+    position:absolute;
+    width:60vmax;
+    height:60vmax;
+    border-radius:50%;
+    filter:blur(70px);
+    opacity:.35;
+    pointer-events:none;
+  }
+  .blob-a{
+    background:radial-gradient(circle at 30% 30%, #0A84FF, transparent 70%);
+    top:-20%;
+    right:-15%;
+  }
+  .blob-b{
+    background:radial-gradient(circle at 70% 70%, #30D158, transparent 70%);
+    bottom:-25%;
+    left:-15%;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .blob-a{ animation: drift-a 22s ease-in-out infinite; }
+    .blob-b{ animation: drift-b 26s ease-in-out infinite; }
+  }
+  @keyframes drift-a{
+    0%,100%{ transform:translate(0,0); }
+    50%{ transform:translate(-4%, 5%); }
+  }
+  @keyframes drift-b{
+    0%,100%{ transform:translate(0,0); }
+    50%{ transform:translate(4%, -5%); }
+  }
+  .welcome-content{
+    position:relative;
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:28px;
+    text-align:center;
+    padding:24px;
+  }
+  .welcome-eyebrow{
+    margin:0;
+    direction:ltr;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:.08em;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+  }
+  .welcome-title{
+    margin:0;
+    direction:ltr;
+    font-size:clamp(46px,9vw,84px);
+    font-weight:200;
+    letter-spacing:-0.02em;
+    text-wrap:balance;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .welcome-content{ animation: rise .7s cubic-bezier(.16,1,.3,1) both; }
+  }
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(14px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .btn-continue{
+    direction:ltr;
+    background:var(--accent);
+    color:#fff;
+    border:0;
+    border-radius:999px;
+    padding:15px 42px;
+    font-family:inherit;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(10,132,255,.3);
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn-continue:hover{ background:var(--accent-strong); transform:translateY(-1px); }
+  .btn-continue:active{ transform:translateY(0) scale(.98); }
+
+  /* ---------- Main app ---------- */
+  .app{
+    max-width:960px;
+    margin:0 auto;
+    padding:28px 20px 80px;
+  }
+
   .masthead{
     display:flex;
     align-items:flex-end;
     justify-content:space-between;
     gap:16px;
-    border-bottom:2px solid var(--ink);
-    padding-bottom:16px;
+    padding-bottom:20px;
     margin-bottom:24px;
     flex-wrap:wrap;
   }
   .masthead h1{
-    font-family:"Frank Ruhl Libre",serif;
     font-weight:700;
-    font-size:clamp(28px,4vw,38px);
+    font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.01em;
     margin:0;
     text-wrap:balance;
   }
@@ -93,115 +184,113 @@
   }
   .currency-toggle{
     display:flex;
-    border:1px solid var(--border);
-    border-radius:8px;
-    overflow:hidden;
+    background:var(--surface-2);
+    border-radius:10px;
+    padding:3px;
+    gap:2px;
   }
   .currency-toggle button{
     border:0;
-    background:var(--surface);
+    background:transparent;
     color:var(--ink-dim);
-    font-family:"IBM Plex Mono",monospace;
+    font-family:inherit;
     font-weight:600;
     font-size:14px;
-    padding:8px 14px;
+    padding:7px 16px;
+    border-radius:8px;
     cursor:pointer;
+    transition:background .15s ease, color .15s ease, box-shadow .15s ease;
   }
   .currency-toggle button.active{
-    background:var(--accent);
-    color:#fff;
+    background:var(--surface);
+    color:var(--ink);
+    box-shadow:0 1px 3px rgba(0,0,0,.12);
   }
 
-  /* summary strip */
   .summary{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:14px;
-    margin-bottom:28px;
+    gap:12px;
+    margin-bottom:24px;
   }
   .stat{
     background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:12px;
+    border-radius:16px;
     padding:16px 18px;
     box-shadow:var(--shadow);
   }
   .stat .label{
     font-size:12px;
-    letter-spacing:.06em;
-    text-transform:uppercase;
+    letter-spacing:.02em;
     color:var(--ink-dim);
   }
   .stat .value{
-    font-family:"IBM Plex Mono",monospace;
     font-variant-numeric:tabular-nums;
-    font-size:22px;
+    font-size:21px;
     font-weight:600;
+    letter-spacing:-.01em;
     margin-top:6px;
   }
   .stat .value.pos{ color:var(--pos); }
   .stat .value.neg{ color:var(--neg); }
 
-  /* add-position card */
   .card{
     background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:14px;
+    border-radius:18px;
     box-shadow:var(--shadow);
-    margin-bottom:24px;
+    margin-bottom:20px;
+    overflow:hidden;
   }
   .card-head{
     padding:16px 20px;
-    border-bottom:1px solid var(--border);
-    font-family:"Frank Ruhl Libre",serif;
-    font-weight:500;
-    font-size:18px;
+    font-weight:600;
+    font-size:17px;
+    letter-spacing:-.005em;
   }
   form.add-form{
     display:grid;
     grid-template-columns:1.6fr 1fr 1fr 1fr auto;
-    gap:12px;
-    padding:18px 20px;
+    gap:10px;
+    padding:0 20px 20px;
     align-items:end;
   }
   .field{ display:flex; flex-direction:column; gap:6px; }
   .field label{
     font-size:12px;
     color:var(--ink-dim);
-    letter-spacing:.02em;
   }
   .field input{
     background:var(--surface-2);
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:9px 10px;
+    border:1px solid transparent;
+    border-radius:10px;
+    padding:10px 12px;
     color:var(--ink);
-    font-family:"Assistant",sans-serif;
+    font-family:inherit;
     font-size:15px;
   }
   .field input[type="number"]{
-    font-family:"IBM Plex Mono",monospace;
     font-variant-numeric:tabular-nums;
   }
   .field input:focus, button:focus-visible{
-    outline:2px solid var(--accent);
-    outline-offset:1px;
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
   }
   .btn-primary{
     background:var(--accent);
     color:#fff;
     border:0;
-    border-radius:8px;
-    padding:10px 18px;
-    font-family:"Assistant",sans-serif;
+    border-radius:10px;
+    padding:11px 20px;
+    font-family:inherit;
     font-weight:600;
     font-size:15px;
     cursor:pointer;
     white-space:nowrap;
+    transition:background .15s ease;
   }
   .btn-primary:hover{ background:var(--accent-strong); }
 
-  /* table */
   .table-wrap{ overflow-x:auto; }
   table{
     width:100%;
@@ -211,23 +300,18 @@
   thead th{
     text-align:right;
     font-size:12px;
-    letter-spacing:.05em;
-    text-transform:uppercase;
     color:var(--ink-dim);
     font-weight:600;
-    padding:10px 20px;
-    border-bottom:1px solid var(--border);
+    padding:0 20px 10px;
   }
   thead th.num, td.num{ text-align:left; }
   tbody td{
     padding:14px 20px;
-    border-bottom:1px solid var(--border);
+    border-top:1px solid var(--border);
     font-size:15px;
   }
-  tbody tr:last-child td{ border-bottom:0; }
-  tbody tr:hover{ background:var(--accent-soft); }
+  tbody tr:hover{ background:var(--surface-2); }
   td.num, td.mono{
-    font-family:"IBM Plex Mono",monospace;
     font-variant-numeric:tabular-nums;
   }
   td.company{ font-weight:600; }
@@ -235,28 +319,27 @@
     display:inline-flex;
     align-items:center;
     gap:4px;
-    padding:3px 9px;
+    padding:4px 10px;
     border-radius:999px;
     font-size:13px;
     font-weight:600;
-    font-family:"IBM Plex Mono",monospace;
   }
   .pill.pos{ background:var(--pos-soft); color:var(--pos); }
   .pill.neg{ background:var(--neg-soft); color:var(--neg); }
   .row-actions{ display:flex; gap:8px; justify-content:flex-end; }
   .icon-btn{
-    background:none;
-    border:1px solid var(--border);
-    border-radius:6px;
+    background:var(--surface-2);
+    border:0;
+    border-radius:50%;
     color:var(--ink-dim);
-    width:30px;
-    height:30px;
+    width:28px;
+    height:28px;
     cursor:pointer;
-    font-size:14px;
+    font-size:13px;
     line-height:1;
+    transition:background .15s ease, color .15s ease;
   }
-  .icon-btn:hover{ border-color:var(--accent); color:var(--accent); }
-  .icon-btn.danger:hover{ border-color:var(--neg); color:var(--neg); }
+  .icon-btn.danger:hover{ background:var(--neg-soft); color:var(--neg); }
 
   .price-edit{
     display:flex;
@@ -266,13 +349,18 @@
   .price-edit input{
     width:80px;
     background:var(--surface-2);
-    border:1px solid var(--border);
-    border-radius:6px;
-    padding:5px 7px;
-    font-family:"IBM Plex Mono",monospace;
+    border:1px solid transparent;
+    border-radius:8px;
+    padding:6px 8px;
     font-variant-numeric:tabular-nums;
     font-size:14px;
     color:var(--ink);
+    font-family:inherit;
+  }
+  .price-edit input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
   }
 
   .empty{
@@ -296,12 +384,22 @@
   }
 
   @media (prefers-reduced-motion: no-preference){
-    tbody tr, .stat{ transition: background .15s ease, box-shadow .15s ease; }
+    tbody tr, .stat, .currency-toggle button{ transition: background .15s ease, box-shadow .15s ease; }
   }
 </style>
 </head>
 <body>
-<div class="app">
+<div class="welcome" id="welcomeScreen">
+  <div class="welcome-blob blob-a"></div>
+  <div class="welcome-blob blob-b"></div>
+  <div class="welcome-content">
+    <p class="welcome-eyebrow">DT.Stocks</p>
+    <h1 class="welcome-title">Hello Dvir</h1>
+    <button type="button" class="btn-continue" id="continueBtn">Continue</button>
+  </div>
+</div>
+
+<div class="app" id="mainScreen" hidden>
   <div class="masthead">
     <div>
       <h1>DT.Stocks</h1>
@@ -561,6 +659,11 @@
       saveCurrency();
       render();
     });
+  });
+
+  document.getElementById("continueBtn").addEventListener("click", function(){
+    document.getElementById("welcomeScreen").hidden = true;
+    document.getElementById("mainScreen").hidden = false;
   });
 
   if("serviceWorker" in navigator){
