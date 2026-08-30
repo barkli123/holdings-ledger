@@ -419,6 +419,59 @@
     font-size:15px;
   }
 
+  .bot-form{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:20px 24px;
+  }
+  .bot-form input{
+    flex:1;
+    min-width:0;
+    background:transparent;
+    border:0;
+    border-bottom:1px solid var(--border);
+    padding:8px 2px;
+    color:var(--ink);
+    font-family:inherit;
+    font-size:16px;
+  }
+  .bot-form input:focus{
+    outline:none;
+    border-color:var(--accent);
+  }
+  .mic-btn{
+    background:var(--surface-2);
+    border:0;
+    border-radius:50%;
+    width:40px;
+    height:40px;
+    font-size:17px;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .mic-btn.listening{
+    background:var(--neg-soft);
+    animation:pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.12); }
+  }
+  .bot-reply{
+    margin:0 24px 20px;
+    padding:12px 16px;
+    background:var(--surface-2);
+    border-radius:12px;
+    font-size:14px;
+    color:var(--ink);
+  }
+  .bot-reply.bot-reply-error{
+    background:var(--neg-soft);
+    color:var(--neg);
+  }
+
   footer.hint{
     padding:0 28px 40px;
     font-size:13px;
@@ -503,6 +556,18 @@
     <div class="stat-mini">
       <span class="label">מספר החזקות</span>
       <span class="value" id="statCount">—</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">עוזר חכם</p>
+    <div class="card">
+      <form class="bot-form" id="botForm">
+        <button type="button" class="mic-btn" id="micBtn" aria-label="הקלטה קולית" hidden>🎤</button>
+        <input type="text" id="botInput" placeholder="לדוגמה: תוסיף לי 100 מניות טבע ב-45 שקל" autocomplete="off">
+        <button type="submit" class="btn-primary">שלח</button>
+      </form>
+      <div class="bot-reply" id="botReply" hidden></div>
     </div>
   </div>
 
@@ -745,6 +810,106 @@
       render();
     });
   });
+
+  var BOT_URL = "https://dtstocks-bot.barklien13.workers.dev";
+
+  function findPositionByName(name){
+    var norm = (name || "").trim().toLowerCase();
+    if(!norm) return null;
+    var exact = state.positions.find(function(p){ return p.company.trim().toLowerCase() === norm; });
+    if(exact) return exact;
+    return state.positions.find(function(p){
+      var c = p.company.trim().toLowerCase();
+      return c.indexOf(norm) !== -1 || norm.indexOf(c) !== -1;
+    }) || null;
+  }
+
+  function showBotReply(text, isError){
+    var el = document.getElementById("botReply");
+    el.textContent = text;
+    el.hidden = false;
+    el.className = "bot-reply" + (isError ? " bot-reply-error" : "");
+  }
+
+  document.getElementById("botForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var input = document.getElementById("botInput");
+    var text = input.value.trim();
+    if(!text) return;
+    var submitBtn = e.target.querySelector("button[type=submit]");
+    submitBtn.disabled = true;
+    showBotReply("חושב...", false);
+
+    fetch(BOT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: text })
+    }).then(function(r){ return r.json(); }).then(function(data){
+      submitBtn.disabled = false;
+      if(data.error){
+        showBotReply("שגיאה בתקשורת עם העוזר. נסה שוב.", true);
+        return;
+      }
+      var handled = false;
+      if(data.action === "add" && data.company && data.qty != null && data.entry != null){
+        state.positions.push({
+          id: uid(),
+          company: data.company,
+          entry: data.entry,
+          qty: data.qty,
+          current: (data.current === undefined ? null : data.current)
+        });
+        save();
+        render();
+        handled = true;
+      } else if(data.action === "update_price" && data.company && data.current != null){
+        var pos = findPositionByName(data.company);
+        if(pos){
+          pos.current = data.current;
+          save();
+          render();
+          handled = true;
+        }
+      } else if(data.action === "delete" && data.company){
+        var pos2 = findPositionByName(data.company);
+        if(pos2){
+          state.positions = state.positions.filter(function(x){ return x.id !== pos2.id; });
+          save();
+          render();
+          handled = true;
+        }
+      }
+      if(handled) input.value = "";
+      showBotReply(data.reply || "בוצע.", data.action === "unknown");
+    }).catch(function(){
+      submitBtn.disabled = false;
+      showBotReply("לא הצלחתי להתחבר לעוזר. בדוק חיבור לאינטרנט.", true);
+    });
+  });
+
+  (function setupMic(){
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR) return;
+    var micBtn = document.getElementById("micBtn");
+    micBtn.hidden = false;
+    var recognition = new SR();
+    recognition.lang = "he-IL";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    micBtn.addEventListener("click", function(){
+      try{ recognition.start(); }catch(e){}
+      micBtn.classList.add("listening");
+    });
+    recognition.addEventListener("result", function(e){
+      document.getElementById("botInput").value = e.results[0][0].transcript;
+    });
+    recognition.addEventListener("end", function(){
+      micBtn.classList.remove("listening");
+    });
+    recognition.addEventListener("error", function(){
+      micBtn.classList.remove("listening");
+    });
+  })();
 
   document.getElementById("continueBtn").addEventListener("click", function(){
     document.getElementById("welcomeScreen").hidden = true;
